@@ -1,8 +1,11 @@
 'use strict'
 
+var config = require('./config')
+var Wechat = require('./wechat/wechat')
+var wechatApi = new Wechat(config.wechat)
+
 exports.reply = function* (next){
 	var message = this.weixin
-console.log(message)
 	if(message.MsgType === 'event'){
 	  if(message.Event === 'subscribe'){
 	    if(message.EventKey) {
@@ -28,20 +31,52 @@ console.log(message)
 	  if(content === '马新宁'){
 	    reply = '马新宁？他可能有个小公主！'
 	  }
-	  // else if(content === '2'){
-	  //   reply = {
-	  //     type:'image',
-	  //     mediaId:'http://tu.23juqing.com/d/file/html/gndy/dyzz/2017-04-09/da9c7a64ab7df196d08b4b327ef248f2.jpg'
-	  //   }
-	  // }
-	  // else if(content === '3'){
-	  //   reply = [{
-	  //     title:'金刚.骷髅岛',
-	  //     description:'南太平洋上的神秘岛屿——骷髅岛。史上最大金刚与邪恶骷髅蜥蜴的较量。',
-	  //     picUrl:'http://tu.23juqing.com/d/file/html/gndy/dyzz/2017-04-09/da9c7a64ab7df196d08b4b327ef248f2.jpg',
-	  //     url:'http://www.piaohua.com/html/dongzuo/2017/0409/31921.html' //可下载观看喔
-	  //   }]
-	  // }
+	  else if(content === '图片'){
+	    var data = yield wechatApi.uploadMaterial('image',__dirname + '/assect/1.jpg')
+			reply = {
+	    	type: 'image',
+				mediaId: data.media_id
+			}
+	  }
+	  else if(content === '视频'){
+			var data = yield wechatApi.uploadMaterial('video',__dirname + '/assect/2.mp4')
+			reply = {
+				type: 'video',
+				title: '奈良的小鹿',
+				description: '小鹿舔了一手口水',
+				mediaId: data.media_id
+			}
+	  }
+		else if(content === '音乐'){
+			var data = yield wechatApi.uploadMaterial('image',__dirname + '/assect/1.jpg')
+			reply = {
+				type: 'music',
+				title: '粉红色的回忆',
+				description: '给你一个粉红色的回忆',
+				musicUrl: 'http://music.163.com/song/media/outer/url?id=317151.mp3',
+				HQMusicUrl: 'http://music.163.com/song/media/outer/url?id=317151.mp3',
+				thumbMediaId: data.media_id,
+			}
+		}
+		else if (content === '2') {
+			var data = yield wechatApi.uploadMaterial('image', __dirname + '/assect/1.jpg', {type: 'image'})
+
+			reply = {
+				type: 'image',
+				mediaId: data.media_id
+			}
+		}
+		// else if(content === '1'){
+		// 	var data = yield wechatApi.uploadMaterial('video',__dirname + '/assect/2.mp4',{
+		// 		type: 'video', description: {"title":'奈良的小鹿', "introduction":'小鹿舔了一手口水'}
+		// 	})
+		// 	reply = {
+		// 		type: 'video',
+		// 		title: '奈良的小鹿',
+		// 		description: '小鹿舔了一手口水',
+		// 		mediaId: data.media_id
+		// 	}
+		// }
 	  this.body = reply
 	}
 	else {
