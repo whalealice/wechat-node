@@ -5,7 +5,7 @@ var util = require('./libs/util.js')
 var wechat_file = path.join(__dirname,'./config/wechat.txt')
 var config = {
 	wechat:{
-		appId:'wx0c9e8118e705bf33',
+		appID:'wx0c9e8118e705bf33',
 		appSecret :'fe6b05a82c4358f1852134e567dfacb5',
 		token:'ploaris20180101',
 		getAccessToken:()=>{
